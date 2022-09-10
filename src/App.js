@@ -1,24 +1,21 @@
-import logo from './logo.svg';
-import './App.css';
+import Individial from './routes/Home/individualPage';
+import LgaResult from './routes/Home/lgaResult';
+import Addscore from './routes/Home/addscore';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route, useParams
+} from "react-router-dom";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/Addscore" element={<Addscore />} />
+        <Route path="/LgaResult" element={<LgaResult />} />
+        <Route path="/" element={<Individial />} />
+      </Routes>
+    </Router>
   );
 }
 
