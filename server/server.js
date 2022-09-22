@@ -108,10 +108,6 @@ app.post("/storeNewScore", (req, res)=>{
     const selectParty = req.body.selectParty;
     const selectPoll = req.body.selectPoll;
     const number = req.body.number;
-    console.log(name);
-    console.log(number)
-    console.log(selectPoll)
-    console.log(selectParty)
 
     client.query(`call addNewPollScore('${name}', ${number}, ${selectPoll}, '${selectParty}')`).then(result => {
         return res.send({result : 1});
