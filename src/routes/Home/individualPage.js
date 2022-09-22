@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import instance from "../../axios";
+import './style.css';
+import { useNavigate } from "react-router-dom";
+
 
 
 export default function Individial() {
@@ -10,6 +13,7 @@ export default function Individial() {
     const [selectPollName, setSelectPollName] = useState("");
     const [pollResult, setPollResult] = useState([]);
     const [processing, setProcessing] = useState(false)
+    const navigate = useNavigate();
 
     useEffect(() => {
         instance({
@@ -26,9 +30,9 @@ export default function Individial() {
         })
     }, [pollName]);
 
-    const handleSearch = e => {
-        e.preventDefault();
-        setProcessing(true)
+    useEffect(() => {
+        setProcessing(true);
+        setPolls([]);
         instance({
             method: "post",
             headers: { "Content-Type": "application/json" },
@@ -44,33 +48,37 @@ export default function Individial() {
             }
         })
 
-    }
+    }, [pollid, selectPollName])
 
     return (
-        <>
-            <div className="Individual">
+        <div className="container">
+        <div className='button'>
+        <button onClick={()=> navigate("/Addscore")}>Add Results</button>
+        <button onClick={()=> navigate("/LgaResult")}>Check Total Scores In any LGA</button>
+        </div>
+            <div className="main">
             <p>{message}</p>
-                <form onSubmit={handleSearch}>
-                    <p>Enter Polling unit name to get result.</p>
-                    <input type="text"  onChange={e => setPollName(e.target.value)} />
-                    <button>Search</button>
+            <p>Enter Polling unit name to get result.</p>
+
+                <form>
+                    <input type="text"   onChange={e => {
+                        setPollName(e.target.value);
+                    }} />
                 </form>
-                {processing === true ? <p>Searching ...</p> : '' }
-                {(polls.length >= 1 || processing === false) ? <p>Search result for {pollName}</p> : 'Nothing to show'}
-                {polls.map((poll, index) => {
+                {((processing === false) && pollResult.length >= 1) ? <p>Search result for {selectPollName}</p>: (processing === true) ? <p>Searching ...</p> :  pollResult.length <= 1 ? 'Nothing to show' : ''}
+              <div className="para-dropdown">  {polls.map((poll, index) => {
                     return <>
-                        <p style={{ cursor: "pointer" }} key={index} onClick={() => {
+                        <p  style={{ cursor: "pointer" }} key={index} onClick={() => {
                             setPollId(poll.uniqueid);
                             setSelectPollName(poll.polling_unit_name);
                             setPollName(null);
                         }}>{poll.polling_unit_name}</p>
                     </>
 
-                })}
+                })} </div>
             </div>
 
-            <div className='poll-table'>
-                <table style={{ width: 100 + '%' }}>
+            {pollResult.length >= 1 ?    <table className='poll-table'>
                     <thead>
                         <tr>
                             <th>S/N</th>
@@ -90,9 +98,8 @@ export default function Individial() {
                         }
                     </tbody>
 
-                </table>
-            </div>
-        </>
+                </table> : ''}
+        </div>
 
     )
 }
